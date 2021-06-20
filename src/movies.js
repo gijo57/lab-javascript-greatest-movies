@@ -10,23 +10,17 @@ function getAllDirectors(movies) {
 
 // Iteration 2: Steven Spielberg. The best? - How many drama movies did STEVEN SPIELBERG direct?
 function howManyMovies(movies) {
-  return movies.filter((movie) => {
-    return (
+  return movies.filter(
+    (movie) =>
       movie.director === 'Steven Spielberg' && movie.genre.includes('Drama')
-    );
-  }).length;
+  ).length;
 }
 
 // Iteration 3: All scores average - Get the average of all scores with 2 decimals
 function scoresAverage(movies) {
   const average =
-    movies.reduce((sum, movie) => {
-      if (movie.score) {
-        return sum + movie.score;
-      } else {
-        return sum;
-      }
-    }, 0) / movies.length || 0;
+    movies.reduce((sum, movie) => (movie.score ? sum + movie.score : sum), 0) /
+      movies.length || 0;
   return Number(average.toFixed(2));
 }
 
@@ -51,19 +45,46 @@ function orderAlphabetically(movies) {
     .sort((a, b) => {
       return a.title.localeCompare(b.title);
     })
-    .map((movie) => movie.title)
-    .slice(0, 20);
+    .slice(0, 20)
+    .map((movie) => movie.title);
 }
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 function turnHoursToMinutes(movies) {
   return movies.map((movie) => {
-    let digits = movie.duration.match(/\d+/);
+    let digits = movie.duration.match(/\d+/g);
+    let durationInMinutes =
+      digits.length === 2
+        ? Number(digits[0]) * 60 + Number(digits[1])
+        : Number(digits[0]) * 60;
+    return { ...movie, duration: durationInMinutes };
   });
 }
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
 function bestYearAvg(movies) {
-  return;
+  if (!movies.length) return null;
+  const yearlyScores = {};
+  movies.forEach((movie) => {
+    if (yearlyScores.hasOwnProperty(movie.year)) {
+      yearlyScores[movie.year].push(movie.score);
+    } else {
+      yearlyScores[movie.year] = [];
+      yearlyScores[movie.year].push(movie.score);
+    }
+  });
+  const yearlyAverages = Object.entries(yearlyScores).map((year) => {
+    return {
+      year: year[0],
+      avg: year[1].reduce((acc, val) => acc + val, 0) / year[1].length
+    };
+  });
+  const highestAverage = yearlyAverages.reduce(
+    (acc, year) => {
+      return acc.avg < year.avg ? year : acc;
+    },
+    { year: '', avg: 0 }
+  );
+  return `The best year was ${highestAverage.year} with an average score of ${highestAverage.avg}`;
 }
 
 // The following is required to make unit tests work.
