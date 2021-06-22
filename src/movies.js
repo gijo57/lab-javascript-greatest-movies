@@ -53,7 +53,10 @@ function orderAlphabetically(movies) {
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 function turnHoursToMinutes(movies) {
   return movies.map((movie) => {
-    let digits = movie.duration.match(/\d+/g);
+    let duration = movie.duration.includes('h')
+      ? movie.duration
+      : '0h '.concat(movie.duration);
+    let digits = duration.match(/\d+/g);
     let durationInMinutes =
       digits.length === 2
         ? Number(digits[0]) * 60 + Number(digits[1])
